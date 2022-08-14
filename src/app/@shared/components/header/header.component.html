@@ -3,6 +3,27 @@
     <figure class="content_brand-logo">
       <img src="assets/images/preveo-brand-logo.png" alt="Preveo brand logo" />
     </figure>
-    <nav class="content_navigation"></nav>
+    <nav class="content_navigation">
+      <ul class="content_navigation_list">
+        <li class="content_navigation_list_item">
+          <button
+            type="button"
+            [matMenuTriggerFor]="nominaMenu"
+            matRipple
+            matRippleColor="rgba(236, 236, 236, 0.156)"
+          >
+            Nómina
+          </button>
+          <mat-menu #nominaMenu="matMenu" xPosition="before" yPosition="below">
+            <button mat-menu-item routerLink="/nomina/novedades">
+              Novedades
+            </button>
+            <button mat-menu-item routerLink="/nomina/prestamos">
+              Préstamos
+            </button>
+          </mat-menu>
+        </li>
+      </ul>
+    </nav>
   </section>
 </header>
