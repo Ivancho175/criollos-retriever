@@ -1,0 +1,23 @@
+@import "./theme/settings";
+
+.header {
+  height: 66px;
+  width: 100%;
+  background-color: rgba(56, 59, 62, 0.92);
+  .content {
+    @include flexbox(space-between, center, row);
+    width: 90%;
+    max-width: 75rem;
+    height: 100%;
+    margin: 0 auto;
+
+    &_brand-logo {
+      @include flexbox(center, center, column);
+      height: 100%;
+      width: 4.4rem;
+      img {
+        max-width: 100%;
+      }
+    }
+  }
+}

@@ -1,0 +1,175 @@
+<section class="novedades">
+  <article class="form-title">
+    <h2 class="form-title_text">Novedades</h2>
+  </article>
+
+  <form
+    class="novedades-form"
+    [formGroup]="novedadesForm"
+    (ngSubmit)="sendForm(novedadesForm)"
+  >
+    <div class="row">
+      <mat-form-field
+        class="example-full-width"
+        appearance="fill"
+        color="accent"
+      >
+        <mat-label>Quién reporta la novedad</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="auto"
+          formControlName="aprueba"
+          color="accent"
+        />
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option
+            *ngFor="let name of filteredJefesNames | async"
+            [value]="name"
+            style="color: #000"
+          >
+            {{ name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="disabled">
+        <mat-label>Fecha</mat-label>
+        <input matInput type="date" formControlName="fecha" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Nombre del empleado</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="auto2"
+          formControlName="empleado"
+          color="accent"
+        />
+        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn">
+          <mat-option
+            *ngFor="let name of filteredEmpleadosNames | async"
+            [value]="name"
+            style="color: #000"
+          >
+            {{ name }}
+          </mat-option>
+        </mat-autocomplete>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="findUserByName(empleado.value)"
+        >
+          Buscar
+        </button>
+      </mat-form-field>
+
+      <mat-form-field class="disabled" appearance="fill" color="accent">
+        <mat-label>Documento de identificación</mat-label>
+        <input
+          matInput
+          type="number"
+          #identificacion
+          maxlength="10"
+          minlength="6"
+          formControlName="identificacion"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="disabled">
+        <mat-label>Fecha de ingreso nómina</mat-label>
+        <input matInput type="date" formControlName="fechaIngreso" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>Centro de costos</mat-label>
+        <input matInput disabled value="PRI" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Código Centro de costos</mat-label>
+        <input matInput disabled value="CC0024" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Tipo de novedad</mat-label>
+        <mat-select formControlName="tipoNovedad">
+          <mat-option
+            *ngFor="let novedad of novedades"
+            [value]="novedad.key"
+            style="color: #000"
+          >
+            {{ novedad.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Días a facturar</mat-label>
+        <input matInput type="number" formControlName="diasFacturar" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Días laborados</mat-label>
+        <input matInput type="number" formControlName="diasLaborados" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Fecha inicial novedad</mat-label>
+        <input matInput type="date" formControlName="inicioNovedad" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Fecha final Novedad</mat-label>
+        <input matInput type="date" formControlName="finNovedad" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Observaciones</mat-label>
+        <textarea
+          matInput
+          placeholder="Ingrese aquí sus comentarios adicionales"
+          formControlName="observaciones"
+          style="max-height: 20rem"
+        >
+        </textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <ngx-dropzone (change)="onSelect($event)" class="dropzone" matRipple>
+        <ngx-dropzone-label>
+          Arrastra y suelta aquí tu archivo de soporte.<br />
+          O presiona para abrir un explorador de archivos.
+        </ngx-dropzone-label>
+        <ngx-dropzone-preview
+          *ngFor="let f of soportes"
+          [removable]="true"
+          (removed)="onRemove(f)"
+        >
+          <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+        </ngx-dropzone-preview>
+      </ngx-dropzone>
+    </div>
+    <button
+      [disabled]="novedadesForm.invalid"
+      [ngClass]="{ disabled: novedadesForm.invalid }"
+      matRipple
+      type="submit"
+      class="send-button"
+    >
+      Guardar novedad
+    </button>
+  </form>
+</section>

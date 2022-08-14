@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@300;400;500&family=Sora:wght@400;600;700&display=swap");
+@import "breakpoints";
+
+$--clr-primary-blue: #063fb2;
+$--clr-primary-green: #00db22;
+$--clr-light: #f9f9f9;
+$--clr-dark: #252525;
+$--clr-soft-dark: #505050;
+$--clr-dark-grey: #808080;
+$--clr-grey: #b5b5b5;
+$--clr-dark-opaque: #9a9ea6;
+
+$--background: $--clr-light;
+$--foreground: $--clr-dark;
+$--foreground-opaque: $--clr-dark-opaque;
+
+$--fw-light: 300;
+$--fw-regular: 400;
+$--fw-medium: 500;
+$--fw-semi-bold: 600;
+$--fw-bold: 700;
+
+$--ff-primary: "Roboto", sans-serif;
+$--ff-secondary: "Sora", sans-serif;
+$--ff-tertiary: "Montserrat", sans-serif;
+
+@mixin flexbox($justify, $align, $direction) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: $direction;
+}
+
+@mixin fontStyle($size, $l-height, $weight, $color, $text-transform) {
+  font-size: $size;
+  line-height: $l-height;
+  font-weight: $weight;
+  color: $color;
+  text-transform: $text-transform;
+}
+
+.modal {
+  @include flexbox(center, center, column);
+  /* display: none; */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #2b2b2b67;
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  .card {
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center;
+    gap: 1rem;
+    height: auto;
+    width: 95%;
+    max-width: fit-content;
+    padding: 1rem;
+    background-color: $--clr-light;
+    box-shadow: 0px 4.15537px 9.69587px -4.15537px rgba(24, 39, 75, 0.12),
+      0px 6.92562px 22.162px -2.77025px rgba(24, 39, 75, 0.1);
+    border-radius: 1rem;
+    .close {
+      @include flexbox(center, center, column);
+      min-width: 1.5rem;
+      min-height: 1.5rem;
+      margin: 0.5em 0.5em auto auto;
+      border-radius: 50%;
+      background-color: #e7e7e7;
+      cursor: pointer;
+      .fas {
+        font-size: 10px;
+        color: $--foreground;
+      }
+    }
+    &__image {
+      width: 9.25rem;
+      height: 9.5rem;
+      pointer-events: none;
+      img {
+        width: 100%;
+      }
+    }
+    &__text {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 300px;
+      text-align: center;
+      &__title {
+        font-family: $--ff-secondary;
+        font-weight: 600;
+        letter-spacing: 0.05rem;
+      }
+      &__paragraph {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Small devices
+@mixin sm {
+  @media (min-width: #{$screen-sm-min}) {
+    @content;
+  }
+}
+
+// Medium devices
+@mixin md {
+  @media (min-width: #{$screen-md-min}) {
+    @content;
+  }
+}
+
+// Large devices
+@mixin lg {
+  @media (min-width: #{$screen-lg-min}) {
+    @content;
+  }
+}
+
+// Extra large devices
+@mixin xl {
+  @media (min-width: #{$screen-xl-min}) {
+    @content;
+  }
+}
+
+// Custom devices
+// @mixin rwd($screen) {
+//   @media (min-width: $screen+'px') {
+//       @content;
+//   }
+// }
+
+@keyframes expand {
+  0% {
+    height: 0px;
+    opacity: 0;
+    transform: translateY(-25%);
+  }
+  50% {
+    height: fit-content;
+    opacity: 0;
+    transform: translateY(-25%);
+  }
+  100% {
+    height: fit-content;
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}

@@ -1,1 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
+@import "./theme/settings";
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");
+
+@font-face {
+  font-family: "TheMixLight";
+  src: url("/assets/fonts/TheMixLight-Plain.otf");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "TheMixLight-Italic";
+  src: url("/assets/fonts/TheMixLight-Italic.otf");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "TheMixBold";
+  src: url("/assets/fonts/TheMixBold-Plain.otf");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "TheMixBold-Italic";
+  src: url("/assets/fonts/TheMixBold-Italic.otf");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "TheMix-Italic";
+  src: url("/assets/fonts/TheMix-Italic.otf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  --ff-r: "TheMixLight";
+  --ff-r-i: "TheMixLight-Italic";
+  --ff-b: "TheMixBold";
+  --ff-b-i: "TheMixBold-Italic";
+
+  --fw-r: 300;
+  --fw-sb: 400;
+  --fw-b: 700;
+
+  --light: #fff;
+  --accent: #c8d400;
+  --dark-pale: #8f8f8f;
+  --dark: #222222;
+
+  --background: var(--light);
+  --foreground: var(--dark);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  font-family: var(--ff-r), Helvetica, sans-serif;
+  font-weight: var(--fw-r);
+  background-color: $--background;
+  color: $--foreground;
+  overflow-x: hidden;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
