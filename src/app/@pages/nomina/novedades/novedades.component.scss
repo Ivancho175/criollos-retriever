@@ -22,10 +22,6 @@
     }
   }
 
-  hr {
-    margin-bottom: 1.34375em;
-  }
-
   .row {
     @include flexbox(space-between, center, column);
     width: 100%;

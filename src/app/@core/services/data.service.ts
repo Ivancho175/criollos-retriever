@@ -15,4 +15,8 @@ export class DataService {
   async getNews() {
     return this.http.get(environment.url + '/getNovedades').toPromise();
   }
+
+  async getLends() {
+    return this.http.get(environment.url + '/getPrestamos').toPromise();
+  }
 }

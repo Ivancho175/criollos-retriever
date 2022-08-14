@@ -1,1 +1,212 @@
-<p>prestamos works!</p>
+<section class="prestamos">
+  <article class="form-title">
+    <h2 class="form-title_text">Préstamos</h2>
+  </article>
+
+  <form
+    class="prestamos-form"
+    [formGroup]="prestamosForm"
+    (ngSubmit)="sendForm(prestamosForm)"
+  >
+    <div class="row">
+      <mat-form-field
+        class="example-full-width"
+        appearance="fill"
+        color="accent"
+      >
+        <mat-label>Quién aprueba el préstamo</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="auto"
+          formControlName="aprueba"
+          color="accent"
+        />
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option
+            *ngFor="let name of filteredJefesNames | async"
+            [value]="name"
+            style="color: #000"
+          >
+            {{ name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="disabled">
+        <mat-label>Fecha</mat-label>
+        <input matInput type="date" formControlName="fecha" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Nombre del empleado</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="auto2"
+          formControlName="empleado"
+          color="accent"
+        />
+        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn">
+          <mat-option
+            *ngFor="let name of filteredEmpleadosNames | async"
+            [value]="name"
+            style="color: #000"
+          >
+            {{ name }}
+          </mat-option>
+        </mat-autocomplete>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="findUserByName(empleado.value)"
+        >
+          Buscar
+        </button>
+      </mat-form-field>
+
+      <mat-form-field class="disabled" appearance="fill" color="accent">
+        <mat-label>Documento de identificación</mat-label>
+        <input
+          matInput
+          type="number"
+          #identificacion
+          maxlength="10"
+          minlength="6"
+          formControlName="identificacion"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="disabled">
+        <mat-label>Fecha de ingreso nómina</mat-label>
+        <input matInput type="date" formControlName="fechaIngreso" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>Centro de costos</mat-label>
+        <input matInput disabled value="PRI" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Código Centro de costos</mat-label>
+        <input matInput disabled value="CC0024" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Valor del préstamo</mat-label>
+        <span matPrefix>$ &nbsp;</span>
+        <input matInput type="number" formControlName="valorPrestamo" />
+        <mat-error
+          *ngIf="
+            valorPrestamo.hasError('min') && !valorPrestamo.hasError('required')
+          "
+        >
+          El valor del préstamo debe ser de mínimo $10.000
+        </mat-error>
+        <mat-error *ngIf="valorPrestamo.hasError('required')">
+          El monto del préstamo es <strong>requerido</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Número de cuotas</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="numeroCuotas"
+          maxlength="2"
+        />
+        <mat-error
+          *ngIf="
+            numeroCuotas.hasError('max') && !numeroCuotas.hasError('required')
+          "
+        >
+          El número de cuotas máximo es 36
+        </mat-error>
+        <mat-error
+          *ngIf="
+            numeroCuotas.hasError('min') && !numeroCuotas.hasError('required')
+          "
+        >
+          El número de cuotas mínimo es 1
+        </mat-error>
+        <mat-error *ngIf="numeroCuotas.hasError('required')">
+          El número de cuotas es <strong>requerido</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Tipo de préstamo</mat-label>
+        <mat-select formControlName="tipoPrestamo">
+          <mat-option
+            *ngFor="let prestamo of prestamos"
+            [value]="prestamo.key"
+            style="color: #000"
+          >
+            {{ prestamo.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Cuotas extra</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <mat-form-field appearance="fill" color="accent">
+            <mat-label>Número de cuotas</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="cuotasExtra"
+              maxlength="1"
+            />
+            <mat-error *ngIf="cuotasExtra.hasError('max')">
+              El número de cuotas extra máximo es 10
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" color="accent">
+            <mat-label>Valor por cuota</mat-label>
+            <span matPrefix>$ &nbsp;</span>
+            <input matInput type="number" formControlName="valorCuotaExtra" />
+            <mat-error *ngIf="valorCuotaExtra.hasError('min')">
+              El valor de la cuota debe ser de mínimo $10.000
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Observaciones</mat-label>
+        <textarea
+          matInput
+          placeholder="Ingrese aquí sus comentarios adicionales"
+          formControlName="observaciones"
+          style="max-height: 20rem"
+        >
+        </textarea>
+      </mat-form-field>
+    </div>
+
+    <button
+      [disabled]="prestamosForm.invalid"
+      [ngClass]="{ disabled: prestamosForm.invalid }"
+      matRipple
+      type="submit"
+      class="send-button"
+    >
+      Guardar préstamo
+    </button>
+  </form>
+</section>
