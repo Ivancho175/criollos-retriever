@@ -26,6 +26,8 @@
         &_item {
           list-style: none;
           button {
+            text-transform: uppercase;
+            font-weight: 300;
             color: var(--light);
             background-color: transparent;
             padding: 0.5rem 1rem;
