@@ -4,6 +4,7 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
+  FormArray,
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -39,6 +40,7 @@ export class PrestamosComponent implements OnInit {
   filteredEmpleadosNames!: Observable<string[]>;
   filteredAsistentesNames!: Observable<string[]>;
   filteredJefesNames!: Observable<string[]>;
+  indiceCuota: number = 1;
 
   public prestamosForm: FormGroup;
 
@@ -74,10 +76,6 @@ export class PrestamosComponent implements OnInit {
 
   public tipoPrestamo = new FormControl('', [Validators.required]);
 
-  public cuotasExtra = new FormControl(0, [Validators.max(10)]);
-
-  public valorCuotaExtra = new FormControl('', [Validators.min(10000)]);
-
   public observaciones = new FormControl();
 
   constructor(
@@ -93,8 +91,7 @@ export class PrestamosComponent implements OnInit {
       valorPrestamo: this.valorPrestamo,
       numeroCuotas: this.numeroCuotas,
       tipoPrestamo: this.tipoPrestamo,
-      cuotasExtra: this.cuotasExtra,
-      valorCuotaExtra: this.valorCuotaExtra,
+      cuotasExtra: this.formBuilder.array([]),
       observaciones: this.observaciones,
     });
   }
@@ -176,5 +173,21 @@ export class PrestamosComponent implements OnInit {
       this.prestamosForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
     }
     return null;
+  }
+
+  get cuotasExtra(): FormArray {
+    return this.prestamosForm.get('cuotasExtra') as FormArray;
+  }
+
+  addCuotaExtra() {
+    const cuotaExtra = this.formBuilder.group({
+      indice_cuota: new FormControl(this.cuotasExtra.length + 1),
+      valor_cuota: new FormControl('', [Validators.min(10000)]),
+    });
+    this.cuotasExtra.push(cuotaExtra);
+  }
+
+  removeCuotaExtra(index: number) {
+    this.cuotasExtra.removeAt(index);
   }
 }
