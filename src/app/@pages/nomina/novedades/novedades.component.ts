@@ -153,7 +153,23 @@ export class NovedadesComponent implements OnInit {
   }
 
   sendForm(form: FormGroup) {
-    console.log(form.value);
+    const data = {
+      quien_reporta_la_novedad: form.controls['aprueba'].value,
+      fecha: form.controls['fecha'].value,
+      nombre_del_empleado: form.controls['empleado'].value,
+      documento_de_identificacion: form.controls['identificacion'].value,
+      fecha_ingreso_nomina: form.controls['fechaIngreso'].value,
+      /*  centro_de_costos: form.controls['fecha'].value,
+      codigo_centro_de_costos: form.controls['fecha'].value, */
+      tipo_de_novedad: form.controls['tipoNovedad'].value,
+      dias_a_facturar: form.controls['diasFacturar'].value,
+      dias_laborados: form.controls['diasLaborados'].value,
+      fecha_inicial_novedad: form.controls['inicioNovedad'].value,
+      fecha_final_novedad: form.controls['finNovedad'].value,
+      obsevaciones: form.controls['observaciones'].value,
+      /* soporte_de_incapacidad: form.controls['fecha'].value, */
+    };
+    console.log(data);
   }
 
   findUserByName(name: string | null) {
