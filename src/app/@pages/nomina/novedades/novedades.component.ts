@@ -284,11 +284,12 @@ export class NovedadesComponent implements OnInit {
       this.actualEmpleado = this.empleados!.find((e: any) => {
         return e.empleado === name;
       });
+      console.log(this.actualEmpleado);
       this.novedadesForm
         .get('identificacion')
         ?.patchValue(this.actualEmpleado?.identificacion);
       const str = this.actualEmpleado?.fecha_ingreso;
-      const [month, day, year] = str!.split('-');
+      const [year, month, day] = str!.split('-');
       const date = new Date(+year, +month - 1, +day);
       this.novedadesForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
     }
@@ -308,5 +309,9 @@ export class NovedadesComponent implements OnInit {
   toggleOpen() {
     location.reload();
     this.openModal = !this.openModal;
+  }
+
+  onInputChange(event: any) {
+    console.log(event);
   }
 }
