@@ -103,6 +103,16 @@
       left: 0;
       top: 50%;
       transform: translateY(-50%);
+      @media (max-width: 468px) {
+        position: initial;
+        margin-top: auto;
+        transform: none;
+        margin-top: 2rem;
+        margin-right: auto;
+      }
+      @media (max-width: 991px) {
+        font-size: 14px;
+      }
     }
   }
 
@@ -128,5 +138,10 @@
     background-color: var(--accent);
     border-color: var(--accent);
     color: #fff;
+
+    &.sm {
+      padding: 5px;
+      font-size: 18px;
+    }
   }
 }

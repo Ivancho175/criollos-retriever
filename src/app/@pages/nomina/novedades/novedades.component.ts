@@ -79,6 +79,7 @@ export class NovedadesComponent implements OnInit {
   codigo: string = 'F-TH-08';
   version: number = 1;
   fecha_version: string = '12-Ago-2022';
+  openModal: boolean = false;
 
   public novedadesForm: FormGroup;
 
@@ -207,6 +208,7 @@ export class NovedadesComponent implements OnInit {
   }
 
   sendForm(form: FormGroup) {
+    this.openModal = true;
     const data: NuevaNovedad = {
       quien_reporta_la_novedad: form.controls['aprueba'].value,
       fecha: this.date,
@@ -273,4 +275,9 @@ export class NovedadesComponent implements OnInit {
     console.log(event);
     this.soportes.splice(this.soportes.indexOf(event), 1);
   } */
+
+  toggleOpen() {
+    location.reload();
+    this.openModal = !this.openModal;
+  }
 }

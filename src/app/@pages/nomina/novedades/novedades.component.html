@@ -1,5 +1,7 @@
 <section class="novedades">
   <article class="form-title">
+    <h2 class="form-title_text">Novedades</h2>
+
     <div class="control_version">
       <table>
         <tr>
@@ -13,8 +15,6 @@
         </tr>
       </table>
     </div>
-
-    <h2 class="form-title_text">Novedades</h2>
   </article>
 
   <form
@@ -205,7 +205,7 @@
     </div> -->
     <button
       [disabled]="novedadesForm.invalid"
-      [ngClass]="{ disabled: novedadesForm.invalid }"
+      [ngClass]="{ disabled: novedadesForm.invalid || openModal }"
       matRipple
       type="submit"
       class="send-button"
@@ -213,4 +213,27 @@
       Guardar novedad
     </button>
   </form>
+
+  <div class="modal" *ngIf="openModal">
+    <div class="card">
+      <div (click)="toggleOpen()" class="close">
+        <i class="fas fa-times"></i>
+      </div>
+      <figure class="card_image">
+        <img src="assets/images/gifs/success.gif" />
+      </figure>
+      <article class="card_text">
+        <h2 class="card_text_title">¡Novedad Creada!</h2>
+        <p class="card_text_paragraph">La novedad ha sido creada con éxito.</p>
+      </article>
+      <button
+        (click)="toggleOpen()"
+        type="button"
+        class="send-button sm"
+        matRipple
+      >
+        Entendido
+      </button>
+    </div>
+  </div>
 </section>

@@ -1,9 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@300;400;500&family=Sora:wght@400;600;700&display=swap");
 @import "breakpoints";
-
-$--clr-primary-blue: #063fb2;
-$--clr-primary-green: #00db22;
-$--clr-light: #f9f9f9;
+$--clr-light: #eceaec;
 $--clr-dark: #252525;
 $--clr-soft-dark: #505050;
 $--clr-dark-grey: #808080;
@@ -54,7 +51,7 @@ $--ff-tertiary: "Montserrat", sans-serif;
     display: grid;
     grid-template-columns: 1fr;
     place-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     height: auto;
     width: 95%;
     max-width: fit-content;
@@ -76,26 +73,28 @@ $--ff-tertiary: "Montserrat", sans-serif;
         color: $--foreground;
       }
     }
-    &__image {
-      width: 9.25rem;
-      height: 9.5rem;
+    &_image {
+      @include flexbox(center, center, column);
+      width: 80px;
+      height: 80px;
+      overflow: hidden;
       pointer-events: none;
       img {
-        width: 100%;
+        width: 148px;
       }
     }
-    &__text {
+    &_text {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1rem;
+      gap: 0.3rem;
       max-width: 300px;
       text-align: center;
-      &__title {
-        font-family: $--ff-secondary;
-        font-weight: 600;
+      &_title {
+        font-weight: 500;
+        font-size: 18px;
         letter-spacing: 0.05rem;
       }
-      &__paragraph {
+      &_paragraph {
         font-size: 14px;
       }
     }
