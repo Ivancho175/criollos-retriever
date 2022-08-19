@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  url: 'https://785dbb74-1c46-4d6f-984c-f67a7147be3e.mock.pstmn.io',
+  url: 'https://preveo-cda65rebkq-uc.a.run.app/api/v1/',
 };
 
 /*

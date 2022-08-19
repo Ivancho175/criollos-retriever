@@ -9,8 +9,10 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { DataService } from 'src/app/@core/services/data.service';
-import { Empleado, Asistente, Jefe } from 'src/app/@core/models/empleados';
+import { Empleado, Jefe } from 'src/app/@core/models/empleados';
 import { Novedad } from 'src/app/@core/models/novedad';
+import { CentroCosto } from 'src/app/@core/models/centro-costo';
+import { NuevaNovedad } from 'src/app/@core/models/nueva-novedad';
 
 @Component({
   selector: 'app-novedades',
@@ -18,30 +20,74 @@ import { Novedad } from 'src/app/@core/models/novedad';
   styleUrls: ['./novedades.component.scss'],
 })
 export class NovedadesComponent implements OnInit {
-  empleados: Empleado[] = [];
+  date: Date = new Date();
+  centrosDeCostos: CentroCosto[] = [];
+  empleados: Empleado[] | undefined = [];
+  actualCentroDeCostos: CentroCosto | undefined = {
+    uuid: '',
+    codigo: 0,
+    centro_de_costo: '',
+    empleados: [
+      {
+        uuid: '',
+        identificacion: 0,
+        tipo_id: 'CC',
+        empleado: '',
+        sexo: '',
+        estado_civil: '',
+        fecha_ingreso: `${this.date}`,
+        salario: 0,
+        bienestar: 0,
+        transporte: 0,
+        comunicacion: 0,
+        cargo: '',
+        codigo_de_costo: 0,
+        centro_de_costo: '',
+        celular: 0,
+        direccion: '',
+        correo_corporativo: '',
+        rol: 1,
+      },
+    ],
+  };
   actualEmpleado: Empleado | undefined = {
-    id: 0,
-    imageUrl: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    identification: '',
-    age: 0,
-    dob: Date(),
-    salary: 0,
-    address: '',
+    uuid: '',
+    identificacion: 0,
+    tipo_id: 'CC',
+    empleado: '',
+    sexo: '',
+    estado_civil: '',
+    fecha_ingreso: `${this.date}`,
+    salario: 0,
+    bienestar: 0,
+    transporte: 0,
+    comunicacion: 0,
+    cargo: '',
+    codigo_de_costo: 0,
+    centro_de_costo: '',
+    celular: 0,
+    direccion: '',
+    correo_corporativo: '',
     rol: 0,
   };
-  asistentes: Asistente[] = [];
-  jefes: Jefe[] = [];
+  jefes: Jefe[] | undefined = [];
   novedades: Novedad[] = [];
   soportes: File[] = [];
-  date: Date = new Date();
   filteredEmpleadosNames!: Observable<string[]>;
-  filteredAsistentesNames!: Observable<string[]>;
   filteredJefesNames!: Observable<string[]>;
+  filteredCostCenterNames!: Observable<string[]>;
+  codigo: string = 'F-TH-08';
+  version: number = 1;
+  fecha_version: string = '12-Ago-2022';
 
   public novedadesForm: FormGroup;
+
+  public centro_costos = new FormControl('', [
+    Validators.minLength(4),
+    Validators.required,
+  ]);
+
+  public codigo_centro = new FormControl('');
 
   public aprueba = new FormControl('', [
     Validators.minLength(4),
@@ -79,6 +125,8 @@ export class NovedadesComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.novedadesForm = this.formBuilder.group({
+      centro_costos: this.centro_costos,
+      codigo_centro: this.codigo_centro,
       aprueba: this.aprueba,
       fecha: this.fecha,
       empleado: this.empleado,
@@ -94,18 +142,14 @@ export class NovedadesComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const response: any = await this.dataService.getEmployees();
-    this.empleados = response.filter((e: Empleado) => {
-      return e.rol === 0;
-    });
-    this.asistentes = response.filter((e: Asistente) => {
-      return e.rol === 1;
-    });
-    this.jefes = response.filter((e: Jefe) => {
-      return e.rol === 2;
-    });
+    const costCenter: any = await this.dataService.getCostCenter();
+    this.centrosDeCostos = costCenter.data;
     const novRes: any = await this.dataService.getNews();
-    this.novedades = novRes;
+    this.novedades = novRes.data;
+    this.filteredCostCenterNames = this.centro_costos.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._costCenterFilter(value))
+    );
     this.filteredJefesNames = this.aprueba.valueChanges.pipe(
       startWith(''),
       map((value) => this._jefesFilter(value))
@@ -128,10 +172,20 @@ export class NovedadesComponent implements OnInit {
     return [year, month, day].join('-');
   }
 
+  private _costCenterFilter(value: string | null): string[] {
+    const filterValue = value!.toLowerCase();
+    const costCenterNames = this.centrosDeCostos.map((centro: CentroCosto) => {
+      return centro.centro_de_costo;
+    });
+    return costCenterNames.filter((ccenter: string) => {
+      return ccenter.toLowerCase().includes(filterValue);
+    });
+  }
+
   private _jefesFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
-    const jefesNames = this.jefes.map((jefe: Jefe) => {
-      return jefe.firstName + ' ' + jefe.lastName;
+    const jefesNames = this.jefes!.map((jefe: Jefe) => {
+      return jefe.empleado;
     });
     return jefesNames.filter((jefe: string) => {
       return jefe.toLowerCase().includes(filterValue);
@@ -140,8 +194,8 @@ export class NovedadesComponent implements OnInit {
 
   private _empleadosFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
-    const empleadosNames = this.empleados.map((empleado: Empleado) => {
-      return empleado.firstName + ' ' + empleado.lastName;
+    const empleadosNames = this.empleados!.map((empleado: Empleado) => {
+      return empleado.empleado;
     });
     return empleadosNames.filter((empleado: string) => {
       return empleado.toLowerCase().includes(filterValue);
@@ -153,42 +207,64 @@ export class NovedadesComponent implements OnInit {
   }
 
   sendForm(form: FormGroup) {
-    const data = {
+    const data: NuevaNovedad = {
       quien_reporta_la_novedad: form.controls['aprueba'].value,
-      fecha: form.controls['fecha'].value,
+      fecha: this.date,
       nombre_del_empleado: form.controls['empleado'].value,
       documento_de_identificacion: form.controls['identificacion'].value,
       fecha_ingreso_nomina: form.controls['fechaIngreso'].value,
-      /*  centro_de_costos: form.controls['fecha'].value,
-      codigo_centro_de_costos: form.controls['fecha'].value, */
+      centro_de_costos: form.controls['centro_costos'].value,
+      codigo_centro_de_costos: form.controls['codigo_centro'].value,
       tipo_de_novedad: form.controls['tipoNovedad'].value,
       dias_a_facturar: form.controls['diasFacturar'].value,
       dias_laborados: form.controls['diasLaborados'].value,
       fecha_inicial_novedad: form.controls['inicioNovedad'].value,
       fecha_final_novedad: form.controls['finNovedad'].value,
-      obsevaciones: form.controls['observaciones'].value,
-      /* soporte_de_incapacidad: form.controls['fecha'].value, */
+      observaciones: form.controls['observaciones'].value,
     };
-    console.log(data);
+
+    this.dataService.newNovelty(data).then((r) => {
+      console.log(r);
+    });
+  }
+
+  findCostCenterByName(name: string | null) {
+    if (name) {
+      this.actualCentroDeCostos = this.centrosDeCostos.find((e: any) => {
+        return e.centro_de_costo === name;
+      });
+      this.novedadesForm
+        .get('codigo_centro')
+        ?.patchValue(this.actualCentroDeCostos?.codigo);
+      this.empleados = this.actualCentroDeCostos?.empleados.filter(
+        (e: Empleado) => {
+          return e.rol === 2;
+        }
+      );
+      this.jefes = this.actualCentroDeCostos?.empleados.filter((e: Jefe) => {
+        return e.rol === 1;
+      });
+    }
+    return null;
   }
 
   findUserByName(name: string | null) {
     if (name) {
-      this.actualEmpleado = this.empleados.find((e: any) => {
-        return e.firstName + ' ' + e.lastName === name;
+      this.actualEmpleado = this.empleados!.find((e: any) => {
+        return e.empleado === name;
       });
       this.novedadesForm
         .get('identificacion')
-        ?.patchValue(this.actualEmpleado?.identification);
-      const str = this.actualEmpleado?.dob;
-      const [month, day, year] = str!.split('/');
+        ?.patchValue(this.actualEmpleado?.identificacion);
+      const str = this.actualEmpleado?.fecha_ingreso;
+      const [month, day, year] = str!.split('-');
       const date = new Date(+year, +month - 1, +day);
       this.novedadesForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
     }
     return null;
   }
 
-  onSelect(event: any) {
+  /* onSelect(event: any) {
     console.log(event);
     this.soportes.push(...event.addedFiles);
   }
@@ -196,5 +272,5 @@ export class NovedadesComponent implements OnInit {
   onRemove(event: any) {
     console.log(event);
     this.soportes.splice(this.soportes.indexOf(event), 1);
-  }
+  } */
 }

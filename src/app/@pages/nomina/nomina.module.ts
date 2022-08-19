@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { NgxDropzoneModule } from 'ngx-dropzone';
+/* import { NgxDropzoneModule } from 'ngx-dropzone'; */
 
 import { NominaRoutingModule } from './nomina-routing.module';
 import { NovedadesComponent } from './novedades/novedades.component';
@@ -27,7 +27,7 @@ import { PrestamosComponent } from './prestamos/prestamos.component';
     MatAutocompleteModule,
     MatDatepickerModule,
     MatButtonModule,
-    NgxDropzoneModule,
+    /* NgxDropzoneModule, */
     MatRippleModule,
     MatExpansionModule,
   ],

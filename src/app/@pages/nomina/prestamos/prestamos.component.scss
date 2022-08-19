@@ -45,7 +45,8 @@
     column-gap: 0.5rem;
 
     mat-form-field {
-      width: 70%;
+      max-width: 100%;
+      min-width: 144px;
       transform: translateY(9px);
     }
 
@@ -56,9 +57,14 @@
     }
 
     .add-button {
+      margin-left: auto;
+    }
+
+    .add-button,
+    .remove-button {
       @include flexbox(center, center, column);
       height: 2rem;
-      width: 2rem;
+      min-width: 2rem;
       background-color: #00000005;
       border-style: none;
       border: 1px solid #2525258e;
@@ -71,7 +77,10 @@
   }
 
   .form-title {
+    position: relative;
     height: max-content;
+    width: 90%;
+    max-width: 65rem;
     margin: 0 auto 0.5rem;
     &_text {
       position: relative;
@@ -79,6 +88,7 @@
       font-size: 24px;
       font-weight: 400;
       text-transform: uppercase;
+      text-align: center;
 
       &::before {
         content: "";
@@ -129,6 +139,13 @@
           border-bottom: 5px solid #c8d400;
         }
       }
+    }
+
+    .control_version {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 

@@ -10,8 +10,9 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { DataService } from 'src/app/@core/services/data.service';
-import { Empleado, Asistente, Jefe } from 'src/app/@core/models/empleados';
-import { Prestamo } from 'src/app/@core/models/novedad';
+import { Empleado, Jefe } from 'src/app/@core/models/empleados';
+import { Prestamo } from 'src/app/@core/models/prestamo';
+import { CentroCosto } from 'src/app/@core/models/centro-costo';
 
 @Component({
   selector: 'app-prestamos',
@@ -19,30 +20,73 @@ import { Prestamo } from 'src/app/@core/models/novedad';
   styleUrls: ['./prestamos.component.scss'],
 })
 export class PrestamosComponent implements OnInit {
-  empleados: Empleado[] = [];
+  date: Date = new Date();
+  centrosDeCostos: CentroCosto[] = [];
+  empleados: Empleado[] | undefined = [];
+  actualCentroDeCostos: CentroCosto | undefined = {
+    uuid: '',
+    codigo: 0,
+    centro_de_costo: '',
+    empleados: [
+      {
+        uuid: '',
+        identificacion: 0,
+        tipo_id: 'CC',
+        empleado: '',
+        sexo: '',
+        estado_civil: '',
+        fecha_ingreso: `${this.date}`,
+        salario: 0,
+        bienestar: 0,
+        transporte: 0,
+        comunicacion: 0,
+        cargo: '',
+        codigo_de_costo: 0,
+        centro_de_costo: '',
+        celular: 0,
+        direccion: '',
+        correo_corporativo: '',
+        rol: 1,
+      },
+    ],
+  };
   actualEmpleado: Empleado | undefined = {
-    id: 0,
-    imageUrl: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    identification: '',
-    age: 0,
-    dob: Date(),
-    salary: 0,
-    address: '',
+    uuid: '',
+    identificacion: 0,
+    tipo_id: 'CC',
+    empleado: '',
+    sexo: '',
+    estado_civil: '',
+    fecha_ingreso: `${this.date}`,
+    salario: 0,
+    bienestar: 0,
+    transporte: 0,
+    comunicacion: 0,
+    cargo: '',
+    codigo_de_costo: 0,
+    centro_de_costo: '',
+    celular: 0,
+    direccion: '',
+    correo_corporativo: '',
     rol: 0,
   };
-  asistentes: Asistente[] = [];
-  jefes: Jefe[] = [];
+  jefes: Jefe[] | undefined = [];
   prestamos: Prestamo[] = [];
-  date: Date = new Date();
   filteredEmpleadosNames!: Observable<string[]>;
-  filteredAsistentesNames!: Observable<string[]>;
   filteredJefesNames!: Observable<string[]>;
-  indiceCuota: number = 1;
+  filteredCostCenterNames!: Observable<string[]>;
+  codigo: string = 'F-TH-07';
+  version: number = 1;
+  fecha_version: string = '12-Ago-2022';
 
   public prestamosForm: FormGroup;
+
+  public centro_costos = new FormControl('', [
+    Validators.minLength(4),
+    Validators.required,
+  ]);
+
+  public codigo_centro = new FormControl('');
 
   public aprueba = new FormControl('', [
     Validators.minLength(4),
@@ -83,6 +127,8 @@ export class PrestamosComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.prestamosForm = this.formBuilder.group({
+      centro_costos: this.centro_costos,
+      codigo_centro: this.codigo_centro,
       aprueba: this.aprueba,
       fecha: this.fecha,
       empleado: this.empleado,
@@ -97,18 +143,21 @@ export class PrestamosComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const response: any = await this.dataService.getEmployees();
+    const costCenter: any = await this.dataService.getCostCenter();
+    this.centrosDeCostos = costCenter.data;
+    /* const response: any = await this.dataService.getEmployees();
     this.empleados = response.filter((e: Empleado) => {
       return e.rol === 0;
     });
-    this.asistentes = response.filter((e: Asistente) => {
-      return e.rol === 1;
-    });
     this.jefes = response.filter((e: Jefe) => {
       return e.rol === 2;
-    });
+    }); */
     const presRes: any = await this.dataService.getLends();
-    this.prestamos = presRes;
+    this.prestamos = presRes.data;
+    this.filteredCostCenterNames = this.centro_costos.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._costCenterFilter(value))
+    );
     this.filteredJefesNames = this.aprueba.valueChanges.pipe(
       startWith(''),
       map((value) => this._jefesFilter(value))
@@ -131,10 +180,20 @@ export class PrestamosComponent implements OnInit {
     return [year, month, day].join('-');
   }
 
+  private _costCenterFilter(value: string | null): string[] {
+    const filterValue = value!.toLowerCase();
+    const costCenterNames = this.centrosDeCostos.map((centro: CentroCosto) => {
+      return centro.centro_de_costo;
+    });
+    return costCenterNames.filter((ccenter: string) => {
+      return ccenter.toLowerCase().includes(filterValue);
+    });
+  }
+
   private _jefesFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
-    const jefesNames = this.jefes.map((jefe: Jefe) => {
-      return jefe.firstName + ' ' + jefe.lastName;
+    const jefesNames = this.jefes!.map((jefe: Jefe) => {
+      return jefe.empleado;
     });
     return jefesNames.filter((jefe: string) => {
       return jefe.toLowerCase().includes(filterValue);
@@ -143,8 +202,8 @@ export class PrestamosComponent implements OnInit {
 
   private _empleadosFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
-    const empleadosNames = this.empleados.map((empleado: Empleado) => {
-      return empleado.firstName + ' ' + empleado.lastName;
+    const empleadosNames = this.empleados!.map((empleado: Empleado) => {
+      return empleado.empleado;
     });
     return empleadosNames.filter((empleado: string) => {
       return empleado.toLowerCase().includes(filterValue);
@@ -161,14 +220,14 @@ export class PrestamosComponent implements OnInit {
 
   findUserByName(name: string | null) {
     if (name) {
-      this.actualEmpleado = this.empleados.find((e: any) => {
-        return e.firstName + ' ' + e.lastName === name;
+      this.actualEmpleado = this.empleados!.find((e: any) => {
+        return e.empleado === name;
       });
       this.prestamosForm
         .get('identificacion')
-        ?.patchValue(this.actualEmpleado?.identification);
-      const str = this.actualEmpleado?.dob;
-      const [month, day, year] = str!.split('/');
+        ?.patchValue(this.actualEmpleado?.identificacion);
+      const str = this.actualEmpleado?.fecha_ingreso;
+      const [month, day, year] = str!.split('-');
       const date = new Date(+year, +month - 1, +day);
       this.prestamosForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
     }
@@ -182,12 +241,36 @@ export class PrestamosComponent implements OnInit {
   addCuotaExtra() {
     const cuotaExtra = this.formBuilder.group({
       indice_cuota: new FormControl(this.cuotasExtra.length + 1),
-      valor_cuota: new FormControl('', [Validators.min(10000)]),
+      valor_cuota: new FormControl('', [
+        Validators.min(10000),
+        Validators.required,
+      ]),
     });
     this.cuotasExtra.push(cuotaExtra);
   }
 
   removeCuotaExtra(index: number) {
     this.cuotasExtra.removeAt(index);
+  }
+
+  findCostCenterByName(name: string | null) {
+    if (name) {
+      this.actualCentroDeCostos = this.centrosDeCostos.find((e: any) => {
+        return e.centro_de_costo === name;
+      });
+      this.prestamosForm
+        .get('codigo_centro')
+        ?.patchValue(this.actualCentroDeCostos?.codigo);
+      this.empleados = this.actualCentroDeCostos?.empleados.filter(
+        (e: Empleado) => {
+          return e.rol === 2;
+        }
+      );
+      this.jefes = this.actualCentroDeCostos?.empleados.filter((e: Jefe) => {
+        return e.rol === 1;
+      });
+      console.log(this.empleados);
+      console.log(this.jefes);
+    }
   }
 }

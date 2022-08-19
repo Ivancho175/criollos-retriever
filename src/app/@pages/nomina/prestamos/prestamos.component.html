@@ -1,5 +1,18 @@
 <section class="prestamos">
   <article class="form-title">
+    <div class="control_version">
+      <table>
+        <tr>
+          <td>CÓDIGO: {{ codigo }}</td>
+        </tr>
+        <tr>
+          <td>VERSIÓN: {{ version }}</td>
+        </tr>
+        <tr>
+          <td>FECHA: {{ fecha_version }}</td>
+        </tr>
+      </table>
+    </div>
     <h2 class="form-title_text">Préstamos</h2>
   </article>
 
@@ -8,6 +21,50 @@
     [formGroup]="prestamosForm"
     (ngSubmit)="sendForm(prestamosForm)"
   >
+    <div class="row">
+      <mat-form-field
+        class="example-full-width"
+        appearance="fill"
+        color="accent"
+      >
+        <mat-label>Centro de costos</mat-label>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="auto3"
+          formControlName="centro_costos"
+          color="accent"
+        />
+        <mat-autocomplete #auto3="matAutocomplete" [displayWith]="displayFn">
+          <mat-option
+            *ngFor="let name of filteredCostCenterNames | async"
+            [value]="name"
+            style="color: #000"
+          >
+            {{ name }}
+          </mat-option>
+        </mat-autocomplete>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="findCostCenterByName(centro_costos.value)"
+        >
+          Buscar
+        </button>
+      </mat-form-field>
+
+      <!-- <mat-form-field appearance="fill">
+        <mat-label>Centro de costos</mat-label>
+        <input matInput disabled value="PRI" />
+      </mat-form-field> -->
+
+      <mat-form-field class="disabled" appearance="fill" color="accent">
+        <mat-label>Código Centro de costos</mat-label>
+        <input matInput type="number" formControlName="codigo_centro" />
+      </mat-form-field>
+    </div>
+
     <div class="row">
       <mat-form-field
         class="example-full-width"
@@ -86,18 +143,6 @@
     </div>
 
     <div class="row">
-      <mat-form-field appearance="fill">
-        <mat-label>Centro de costos</mat-label>
-        <input matInput disabled value="PRI" />
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Código Centro de costos</mat-label>
-        <input matInput disabled value="CC0024" />
-      </mat-form-field>
-    </div>
-
-    <div class="row">
       <mat-form-field appearance="fill" color="accent">
         <mat-label>Valor del préstamo</mat-label>
         <span matPrefix>$ &nbsp;</span>
@@ -142,14 +187,14 @@
       </mat-form-field>
 
       <mat-form-field appearance="fill" color="accent">
-        <mat-label>Tipo de préstamo</mat-label>
+        <mat-label>Tipo de prestamo</mat-label>
         <mat-select formControlName="tipoPrestamo">
           <mat-option
             *ngFor="let prestamo of prestamos"
-            [value]="prestamo.key"
+            [value]="prestamo.uuid"
             style="color: #000"
           >
-            {{ prestamo.value }}
+            {{ prestamo.tipo_de_prestamo }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -187,7 +232,9 @@
               <mat-label>Valor por cuota</mat-label>
               <span matPrefix>$ &nbsp;</span>
               <input matInput type="number" formControlName="valor_cuota" />
-              <!-- <mat-error *ngIf="valorCuotaExtra.hasError('min')">
+              <!-- <mat-error
+                *ngIf="prestamosForm.controls['valor_cuota']!.hasError('min')"
+              >
                 El valor de la cuota debe ser de mínimo $10.000
               </mat-error> -->
             </mat-form-field>
@@ -201,7 +248,7 @@
             </button>
             <button
               type="button"
-              class="add-button"
+              class="remove-button"
               matRipple
               (click)="removeCuotaExtra(i)"
             >
@@ -219,7 +266,7 @@
           matInput
           placeholder="Ingrese aquí sus comentarios adicionales"
           formControlName="observaciones"
-          style="max-height: 20rem"
+          style="max-height: 20rem; min-height: 5rem"
         >
         </textarea>
       </mat-form-field>

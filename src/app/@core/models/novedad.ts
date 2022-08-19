@@ -1,6 +1,4 @@
 export interface Novedad {
-  key: string;
-  value: string;
+  uuid: string;
+  novedad: string;
 }
-
-export interface Prestamo extends Novedad {}

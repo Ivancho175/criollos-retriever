@@ -33,14 +33,19 @@
   }
 
   .form-title {
+    position: relative;
     height: max-content;
+    width: 90%;
+    max-width: 65rem;
     margin: 0 auto 0.5rem;
     &_text {
       position: relative;
+      width: auto;
       font-family: "Lato", sans-serif;
       font-size: 24px;
       font-weight: 400;
       text-transform: uppercase;
+      text-align: center;
 
       &::before {
         content: "";
@@ -91,6 +96,13 @@
           border-bottom: 5px solid var(--accent);
         }
       }
+    }
+
+    .control_version {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 
