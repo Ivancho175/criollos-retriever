@@ -81,25 +81,15 @@
         color="accent"
       >
         <mat-label>Quién reporta la novedad</mat-label>
-        <input
-          matInput
-          type="text"
-          [matAutocomplete]="auto"
-          formControlName="aprueba"
-          color="accent"
-        />
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-          <mat-option
-            *ngFor="let name of filteredJefesNames | async"
-            [value]="name"
-            style="color: #000"
-          >
-            {{ name }}
+        <input matInput type="text" formControlName="aprueba" color="accent" />
+        <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option [value]="jefe?.empleado">
+            {{ jefe!.empleado }}
           </mat-option>
-        </mat-autocomplete>
+        </mat-autocomplete> -->
       </mat-form-field>
       <mat-form-field appearance="fill" class="disabled">
-        <mat-label>Fecha</mat-label>
+        <mat-label>Fecha diligenciamiento</mat-label>
         <input matInput type="date" formControlName="fecha" />
       </mat-form-field>
     </div>
@@ -159,7 +149,13 @@
 
       <mat-form-field appearance="fill" color="accent">
         <mat-label>Días laborados</mat-label>
-        <input matInput type="number" formControlName="diasLaborados" />
+        <input
+          matInput
+          type="number"
+          formControlName="diasLaborados"
+          min="1"
+          step="1"
+        />
       </mat-form-field>
     </div>
 

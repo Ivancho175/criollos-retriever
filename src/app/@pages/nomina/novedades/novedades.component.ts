@@ -70,11 +70,30 @@ export class NovedadesComponent implements OnInit {
     correo_corporativo: '',
     rol: 0,
   };
-  jefes: Jefe[] | undefined = [];
+  jefe: Jefe | undefined = {
+    uuid: '',
+    identificacion: 0,
+    tipo_id: 'CC',
+    empleado: '',
+    sexo: '',
+    estado_civil: '',
+    fecha_ingreso: `${this.date}`,
+    salario: 0,
+    bienestar: 0,
+    transporte: 0,
+    comunicacion: 0,
+    cargo: '',
+    codigo_de_costo: 0,
+    centro_de_costo: '',
+    celular: 0,
+    direccion: '',
+    correo_corporativo: '',
+    rol: 0,
+  };
   novedades: Novedad[] = [];
   soportes: File[] = [];
   filteredEmpleadosNames!: Observable<string[]>;
-  filteredJefesNames!: Observable<string[]>;
+  /* filteredJefesNames!: Observable<string[]>; */
   filteredCostCenterNames!: Observable<string[]>;
   codigo: string = 'F-TH-08';
   version: number = 1;
@@ -145,16 +164,23 @@ export class NovedadesComponent implements OnInit {
   async ngOnInit() {
     const costCenter: any = await this.dataService.getCostCenter();
     this.centrosDeCostos = costCenter.data;
+    const response: any = await this.dataService.getEmployees();
+    this.empleados = response.data.filter((e: Empleado) => {
+      return e.rol === 2;
+    });
+    /* this.jefes = response.filter((e: Jefe) => {
+      return e.rol === 2;
+    }); */
     const novRes: any = await this.dataService.getNews();
     this.novedades = novRes.data;
     this.filteredCostCenterNames = this.centro_costos.valueChanges.pipe(
       startWith(''),
       map((value) => this._costCenterFilter(value))
     );
-    this.filteredJefesNames = this.aprueba.valueChanges.pipe(
+    /* this.filteredJefesNames = this.aprueba.valueChanges.pipe(
       startWith(''),
       map((value) => this._jefesFilter(value))
-    );
+    ); */
     this.filteredEmpleadosNames = this.empleado.valueChanges.pipe(
       startWith(''),
       map((value) => this._empleadosFilter(value))
@@ -183,15 +209,15 @@ export class NovedadesComponent implements OnInit {
     });
   }
 
-  private _jefesFilter(value: string | null): string[] {
+  /* private _jefesFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
-    const jefesNames = this.jefes!.map((jefe: Jefe) => {
+    const jefesNames = this.jefe!.map((jefe: Jefe) => {
       return jefe.empleado;
     });
     return jefesNames.filter((jefe: string) => {
       return jefe.toLowerCase().includes(filterValue);
     });
-  }
+  } */
 
   private _empleadosFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
@@ -225,9 +251,7 @@ export class NovedadesComponent implements OnInit {
       observaciones: form.controls['observaciones'].value,
     };
 
-    this.dataService.newNovelty(data).then((r) => {
-      console.log(r);
-    });
+    this.dataService.newNovelty(data);
   }
 
   findCostCenterByName(name: string | null) {
@@ -238,14 +262,19 @@ export class NovedadesComponent implements OnInit {
       this.novedadesForm
         .get('codigo_centro')
         ?.patchValue(this.actualCentroDeCostos?.codigo);
-      this.empleados = this.actualCentroDeCostos?.empleados.filter(
+      /* this.empleados = this.actualCentroDeCostos?.empleados.filter(
         (e: Empleado) => {
           return e.rol === 2;
         }
+      ); */
+      const actualJefe = this.actualCentroDeCostos?.empleados.find(
+        (e: Jefe) => {
+          return e.rol === 1;
+        }
       );
-      this.jefes = this.actualCentroDeCostos?.empleados.filter((e: Jefe) => {
-        return e.rol === 1;
-      });
+      this.novedadesForm.get('aprueba')?.patchValue(actualJefe!.empleado);
+      console.log(this.actualCentroDeCostos?.empleados);
+      console.log(this.jefe, this.empleados);
     }
     return null;
   }
