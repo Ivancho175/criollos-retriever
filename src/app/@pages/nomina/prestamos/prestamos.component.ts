@@ -240,7 +240,11 @@ export class PrestamosComponent implements OnInit {
 
   addCuotaExtra() {
     const cuotaExtra = this.formBuilder.group({
-      indice_cuota: new FormControl(this.cuotasExtra.length + 1),
+      cantidad_cuotas: new FormControl('', [
+        Validators.min(1),
+        Validators.max(10),
+        Validators.required,
+      ]),
       valor_cuota: new FormControl('', [
         Validators.min(10000),
         Validators.required,

@@ -48,12 +48,9 @@
       max-width: 100%;
       min-width: 144px;
       transform: translateY(9px);
-    }
-
-    .index-block {
-      @include flexbox(center, center, column);
-      height: 3.36rem;
-      width: auto;
+      &.index-block {
+        width: 15%;
+      }
     }
 
     .add-button {

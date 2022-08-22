@@ -212,21 +212,25 @@
           *ngFor="let cuota of cuotasExtra.controls; let i = index"
         >
           <div [formGroupName]="i" class="permantly-row">
-            <div class="index-block" syle="height: 100%; width: 30px;">
+            <!-- <div class="index-block" syle="height: 100%; width: 30px;">
               {{ i + 1 }}
-            </div>
-            <!-- <mat-form-field appearance="fill" color="accent">
-              <mat-label>Número de cuotas</mat-label>
+            </div> -->
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              class="index-block"
+            >
+              <mat-label>Número de cuota</mat-label>
               <input
                 matInput
                 type="number"
-                formControlName="cuotasExtra"
+                formControlName="cantidad_cuotas"
                 maxlength="1"
               />
-              <mat-error *ngIf="cuotasExtra.hasError('max')">
+              <!-- <mat-error *ngIf="cuotasExtra.hasError('max')">
                 El número de cuotas extra máximo es 10
-              </mat-error>
-            </mat-form-field> -->
+              </mat-error> -->
+            </mat-form-field>
 
             <mat-form-field appearance="fill" color="accent">
               <mat-label>Valor por cuota</mat-label>
