@@ -41,18 +41,18 @@
             *ngFor="let name of filteredCostCenterNames | async"
             [value]="name"
             style="color: #000"
+            (click)="findCostCenterByName(centro_costos.value)"
           >
             {{ name }}
           </mat-option>
         </mat-autocomplete>
-        <button
+        <!-- <button
           type="button"
           mat-raised-button
           color="accent"
-          (click)="findCostCenterByName(centro_costos.value)"
         >
           Buscar
-        </button>
+        </button> -->
       </mat-form-field>
 
       <mat-form-field class="disabled" appearance="fill" color="accent">
@@ -81,7 +81,13 @@
         color="accent"
       >
         <mat-label>Quién reporta la novedad</mat-label>
-        <input matInput type="text" formControlName="aprueba" color="accent" />
+        <input
+          matInput
+          class="disabled"
+          type="text"
+          formControlName="aprueba"
+          color="accent"
+        />
         <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option [value]="jefe?.empleado">
             {{ jefe!.empleado }}
@@ -109,18 +115,18 @@
             *ngFor="let name of filteredEmpleadosNames | async"
             [value]="name"
             style="color: #000"
+            (click)="findUserByName(empleado.value)"
           >
             {{ name }}
           </mat-option>
         </mat-autocomplete>
-        <button
+        <!-- <button
           type="button"
           mat-raised-button
           color="accent"
-          (click)="findUserByName(empleado.value)"
         >
           Buscar
-        </button>
+        </button> -->
       </mat-form-field>
 
       <mat-form-field class="disabled" appearance="fill" color="accent">
@@ -147,22 +153,34 @@
         <input matInput type="number" formControlName="diasFacturar" />
       </mat-form-field>
 
-      <mat-form-field appearance="fill" color="accent">
-        <mat-label>Días laborados</mat-label>
+      <mat-form-field
+        appearance="fill"
+        color="accent"
+        style="pointer-events: none"
+      >
+        <mat-label>Días novedad</mat-label>
         <input
           matInput
           type="number"
-          formControlName="diasLaborados"
+          formControlName="diasNovedad"
           min="1"
           step="1"
         />
+        <mat-error *ngIf="diasNovedad!.hasError('min')">
+          La fecha final de la novedad no puede ser anterior a la inicial
+        </mat-error>
       </mat-form-field>
     </div>
 
     <div class="row">
       <mat-form-field appearance="fill" color="accent">
         <mat-label>Fecha inicial novedad</mat-label>
-        <input matInput type="date" formControlName="inicioNovedad" />
+        <input
+          matInput
+          type="date"
+          formControlName="inicioNovedad"
+          (change)="onFechaInicialChange($event)"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="fill" color="accent">
@@ -171,7 +189,7 @@
           matInput
           type="date"
           formControlName="finNovedad"
-          (dateChange)="onInputChange($event)"
+          (change)="onInputChange($event)"
         />
       </mat-form-field>
     </div>

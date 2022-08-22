@@ -132,7 +132,7 @@ export class NovedadesComponent implements OnInit {
 
   public diasFacturar = new FormControl('', [Validators.required]);
 
-  public diasLaborados = new FormControl('', [Validators.required]);
+  public diasNovedad = new FormControl('', [Validators.min(1)]);
 
   public inicioNovedad = new FormControl('', [Validators.required]);
 
@@ -154,7 +154,7 @@ export class NovedadesComponent implements OnInit {
       fechaIngreso: this.fechaIngreso,
       tipoNovedad: this.tipoNovedad,
       diasFacturar: this.diasFacturar,
-      diasLaborados: this.diasLaborados,
+      diasNovedad: this.diasNovedad,
       inicioNovedad: this.inicioNovedad,
       finNovedad: this.finNovedad,
       observaciones: this.observaciones,
@@ -245,7 +245,7 @@ export class NovedadesComponent implements OnInit {
       codigo_centro_de_costos: form.controls['codigo_centro'].value,
       tipo_de_novedad: form.controls['tipoNovedad'].value,
       dias_a_facturar: form.controls['diasFacturar'].value,
-      dias_laborados: form.controls['diasLaborados'].value,
+      dias_laborados: form.controls['diasNovedad'].value,
       fecha_inicial_novedad: form.controls['inicioNovedad'].value,
       fecha_final_novedad: form.controls['finNovedad'].value,
       observaciones: form.controls['observaciones'].value,
@@ -273,8 +273,6 @@ export class NovedadesComponent implements OnInit {
         }
       );
       this.novedadesForm.get('aprueba')?.patchValue(actualJefe!.empleado);
-      console.log(this.actualCentroDeCostos?.empleados);
-      console.log(this.jefe, this.empleados);
     }
     return null;
   }
@@ -284,7 +282,6 @@ export class NovedadesComponent implements OnInit {
       this.actualEmpleado = this.empleados!.find((e: any) => {
         return e.empleado === name;
       });
-      console.log(this.actualEmpleado);
       this.novedadesForm
         .get('identificacion')
         ?.patchValue(this.actualEmpleado?.identificacion);
@@ -311,7 +308,23 @@ export class NovedadesComponent implements OnInit {
     this.openModal = !this.openModal;
   }
 
+  fechaInicialNovedad: Date | undefined = undefined;
+
+  onFechaInicialChange(event: any) {
+    const fecha = new Date(event.target.value);
+    this.fechaInicialNovedad = fecha;
+  }
+
   onInputChange(event: any) {
-    console.log(event);
+    const fechaFinal = new Date(event.target.value);
+    const diferencia =
+      fechaFinal.getTime() - this.fechaInicialNovedad!.getTime();
+    const days = diferencia / (1000 * 3600 * 24);
+    if (days < 0) {
+      this.finNovedad.reset();
+      alert('La fecha final debe ser posterior a la inicial');
+    } else {
+      this.novedadesForm.get('diasNovedad')?.patchValue(days + 1);
+    }
   }
 }
