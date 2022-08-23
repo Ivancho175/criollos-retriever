@@ -121,6 +121,13 @@
     max-width: 65rem;
     margin: 2rem 0;
     gap: 1rem;
+    mat-radio-group {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto 1rem;
+    }
   }
 
   .dropzone {

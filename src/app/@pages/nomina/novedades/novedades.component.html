@@ -110,7 +110,11 @@
           formControlName="empleado"
           color="accent"
         />
-        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn">
+        <mat-autocomplete
+          #auto2="matAutocomplete"
+          [displayWith]="displayFn"
+          panelOpen="openPanel"
+        >
           <mat-option
             *ngFor="let name of filteredEmpleadosNames | async"
             [value]="name"
@@ -120,13 +124,14 @@
             {{ name }}
           </mat-option>
         </mat-autocomplete>
-        <!-- <button
+        <button
           type="button"
           mat-raised-button
           color="accent"
+          (click)="findUserByNameInGeneralArray(empleado.value)"
         >
-          Buscar
-        </button> -->
+          Ver todos
+        </button>
       </mat-form-field>
 
       <mat-form-field class="disabled" appearance="fill" color="accent">
@@ -195,6 +200,18 @@
     </div>
 
     <div class="row">
+      <mat-radio-group class="options" formControlName="noveltyOption">
+        <mat-radio-button
+          class="options_item"
+          *ngFor="let type of noveltyTypes"
+          [value]="type"
+        >
+          {{ type }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="row" *ngIf="noveltyOption?.value === noveltyTypes[2]">
       <mat-form-field appearance="fill" color="accent">
         <mat-label>Observaciones</mat-label>
         <textarea
@@ -204,6 +221,24 @@
           style="max-height: 20rem; min-height: 5rem"
         >
         </textarea>
+      </mat-form-field>
+    </div>
+
+    <div
+      class="row"
+      *ngIf="
+        noveltyOption?.value === noveltyTypes[0] ||
+        noveltyOption?.value === noveltyTypes[1]
+      "
+    >
+      <mat-form-field appearance="fill" color="accent">
+        <mat-label>Fecha de ingreso o retiro</mat-label>
+        <input
+          matInput
+          type="date"
+          formControlName="fechaNovedad"
+          (change)="onFechaInicialChange($event)"
+        />
       </mat-form-field>
     </div>
 

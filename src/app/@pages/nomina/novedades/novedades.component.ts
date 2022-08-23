@@ -20,76 +20,13 @@ import { NuevaNovedad } from 'src/app/@core/models/nueva-novedad';
   styleUrls: ['./novedades.component.scss'],
 })
 export class NovedadesComponent implements OnInit {
+  openPanel: boolean = false;
   date: Date = new Date();
   centrosDeCostos: CentroCosto[] = [];
   empleados: Empleado[] | undefined = [];
-  actualCentroDeCostos: CentroCosto | undefined = {
-    uuid: '',
-    codigo: 0,
-    centro_de_costo: '',
-    empleados: [
-      {
-        uuid: '',
-        identificacion: 0,
-        tipo_id: 'CC',
-        empleado: '',
-        sexo: '',
-        estado_civil: '',
-        fecha_ingreso: `${this.date}`,
-        salario: 0,
-        bienestar: 0,
-        transporte: 0,
-        comunicacion: 0,
-        cargo: '',
-        codigo_de_costo: 0,
-        centro_de_costo: '',
-        celular: 0,
-        direccion: '',
-        correo_corporativo: '',
-        rol: 1,
-      },
-    ],
-  };
-  actualEmpleado: Empleado | undefined = {
-    uuid: '',
-    identificacion: 0,
-    tipo_id: 'CC',
-    empleado: '',
-    sexo: '',
-    estado_civil: '',
-    fecha_ingreso: `${this.date}`,
-    salario: 0,
-    bienestar: 0,
-    transporte: 0,
-    comunicacion: 0,
-    cargo: '',
-    codigo_de_costo: 0,
-    centro_de_costo: '',
-    celular: 0,
-    direccion: '',
-    correo_corporativo: '',
-    rol: 0,
-  };
-  jefe: Jefe | undefined = {
-    uuid: '',
-    identificacion: 0,
-    tipo_id: 'CC',
-    empleado: '',
-    sexo: '',
-    estado_civil: '',
-    fecha_ingreso: `${this.date}`,
-    salario: 0,
-    bienestar: 0,
-    transporte: 0,
-    comunicacion: 0,
-    cargo: '',
-    codigo_de_costo: 0,
-    centro_de_costo: '',
-    celular: 0,
-    direccion: '',
-    correo_corporativo: '',
-    rol: 0,
-  };
+  actualCentroDeCostos?: CentroCosto;
+  actualEmpleado?: Empleado;
+  jefe?: Jefe;
   novedades: Novedad[] = [];
   soportes: File[] = [];
   filteredEmpleadosNames!: Observable<string[]>;
@@ -102,29 +39,17 @@ export class NovedadesComponent implements OnInit {
 
   public novedadesForm: FormGroup;
 
-  public centro_costos = new FormControl('', [
-    Validators.minLength(4),
-    Validators.required,
-  ]);
+  public centro_costos = new FormControl('', [Validators.required]);
 
   public codigo_centro = new FormControl('');
 
-  public aprueba = new FormControl('', [
-    Validators.minLength(4),
-    Validators.required,
-  ]);
+  public aprueba = new FormControl('', [Validators.required]);
 
   public fecha = new FormControl('');
 
-  public empleado = new FormControl('', [
-    Validators.required,
-    Validators.minLength(4),
-  ]);
+  public empleado = new FormControl('', [Validators.required]);
 
-  public identificacion = new FormControl('', [
-    Validators.minLength(6),
-    Validators.maxLength(10),
-  ]);
+  public identificacion = new FormControl('', [Validators.required]);
 
   public fechaIngreso = new FormControl();
 
@@ -138,7 +63,12 @@ export class NovedadesComponent implements OnInit {
 
   public finNovedad = new FormControl('', [Validators.required]);
 
+  public noveltyOption = new FormControl('', [Validators.required]);
+  noveltyTypes: string[] = ['ingreso', 'retiro', 'otro'];
+
   public observaciones = new FormControl();
+
+  public fechaNovedad = new FormControl('', [Validators.required]);
 
   constructor(
     private dataService: DataService,
@@ -157,17 +87,19 @@ export class NovedadesComponent implements OnInit {
       diasNovedad: this.diasNovedad,
       inicioNovedad: this.inicioNovedad,
       finNovedad: this.finNovedad,
+      noveltyOption: this.noveltyOption,
       observaciones: this.observaciones,
+      fechaNovedad: this.fechaNovedad,
     });
   }
 
   async ngOnInit() {
     const costCenter: any = await this.dataService.getCostCenter();
     this.centrosDeCostos = costCenter.data;
-    const response: any = await this.dataService.getEmployees();
+    /* const response: any = await this.dataService.getEmployees();
     this.empleados = response.data.filter((e: Empleado) => {
       return e.rol === 2;
-    });
+    }); */
     /* this.jefes = response.filter((e: Jefe) => {
       return e.rol === 2;
     }); */
@@ -248,10 +180,14 @@ export class NovedadesComponent implements OnInit {
       dias_laborados: form.controls['diasNovedad'].value,
       fecha_inicial_novedad: form.controls['inicioNovedad'].value,
       fecha_final_novedad: form.controls['finNovedad'].value,
-      observaciones: form.controls['observaciones'].value,
+      observaciones:
+        form.controls['noveltyOption'].value === 'otro'
+          ? form.controls['observaciones'].value
+          : form.controls['fechaNovedad'].value,
     };
 
-    this.dataService.newNovelty(data);
+    console.log(data);
+    /* this.dataService.newNovelty(data); */
   }
 
   findCostCenterByName(name: string | null) {
@@ -262,11 +198,7 @@ export class NovedadesComponent implements OnInit {
       this.novedadesForm
         .get('codigo_centro')
         ?.patchValue(this.actualCentroDeCostos?.codigo);
-      /* this.empleados = this.actualCentroDeCostos?.empleados.filter(
-        (e: Empleado) => {
-          return e.rol === 2;
-        }
-      ); */
+      this.empleados = this.actualCentroDeCostos?.empleados;
       const actualJefe = this.actualCentroDeCostos?.empleados.find(
         (e: Jefe) => {
           return e.rol === 1;
@@ -293,6 +225,27 @@ export class NovedadesComponent implements OnInit {
     return null;
   }
 
+  async findUserByNameInGeneralArray(name: string | null) {
+    const response: any = await this.dataService.getEmployees();
+    const inputRef = (this.empleados = await response!.data);
+    this._empleadosFilter(name);
+    /* if (name) {
+      this.actualEmpleado = this.empleados!.find((e: any) => {
+        const regex = new RegExp(name, 'gi');
+        return e.empleado === name;
+      });
+      console.log(this.actualEmpleado);
+      this.novedadesForm
+        .get('identificacion')
+        ?.patchValue(this.actualEmpleado?.identificacion);
+      const str = this.actualEmpleado?.fecha_ingreso;
+      const [year, month, day] = str!.split('-');
+      const date = new Date(+year, +month - 1, +day);
+      this.novedadesForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
+    }
+    return null; */
+  }
+
   /* onSelect(event: any) {
     console.log(event);
     this.soportes.push(...event.addedFiles);
@@ -317,8 +270,10 @@ export class NovedadesComponent implements OnInit {
 
   onInputChange(event: any) {
     const fechaFinal = new Date(event.target.value);
-    const diferencia =
-      fechaFinal.getTime() - this.fechaInicialNovedad!.getTime();
+    const fechaInicial = new Date(
+      this.novedadesForm.get('inicioNovedad')?.value
+    );
+    const diferencia = fechaFinal.getTime() - fechaInicial.getTime();
     const days = diferencia / (1000 * 3600 * 24);
     if (days < 0) {
       this.finNovedad.reset();

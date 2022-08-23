@@ -50,26 +50,7 @@ export class PrestamosComponent implements OnInit {
       },
     ],
   };
-  actualEmpleado: Empleado | undefined = {
-    uuid: '',
-    identificacion: 0,
-    tipo_id: 'CC',
-    empleado: '',
-    sexo: '',
-    estado_civil: '',
-    fecha_ingreso: `${this.date}`,
-    salario: 0,
-    bienestar: 0,
-    transporte: 0,
-    comunicacion: 0,
-    cargo: '',
-    codigo_de_costo: 0,
-    centro_de_costo: '',
-    celular: 0,
-    direccion: '',
-    correo_corporativo: '',
-    rol: 0,
-  };
+  actualEmpleado?: Empleado;
   jefes: Jefe[] | undefined = [];
   prestamos: Prestamo[] = [];
   filteredEmpleadosNames!: Observable<string[]>;

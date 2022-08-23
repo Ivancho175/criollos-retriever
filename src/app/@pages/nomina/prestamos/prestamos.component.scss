@@ -49,7 +49,11 @@
       min-width: 144px;
       transform: translateY(9px);
       &.index-block {
+        min-width: 50px;
         width: 15%;
+      }
+      &.amount {
+        min-width: 30px;
       }
     }
 
@@ -81,6 +85,7 @@
     margin: 0 auto 0.5rem;
     &_text {
       position: relative;
+      width: auto;
       font-family: "Lato", sans-serif;
       font-size: 24px;
       font-weight: 400;
@@ -95,9 +100,9 @@
         left: 50%;
         width: 75px;
         height: 17.5px;
-        border-right: 8px solid #c8d400 !important;
-        border-left: 8px solid #c8d400 !important;
-        border-top: 8px solid #c8d400;
+        border-right: 8px solid var(--accent) !important;
+        border-left: 8px solid var(--accent) !important;
+        border-top: 8px solid var(--accent);
         transform: translateX(-50%);
       }
 
@@ -109,9 +114,9 @@
         left: 50%;
         width: 75px;
         height: 17.5px;
-        border-right: 8px solid #c8d400 !important;
-        border-left: 8px solid #c8d400 !important;
-        border-bottom: 8px solid #c8d400;
+        border-right: 8px solid var(--accent) !important;
+        border-left: 8px solid var(--accent) !important;
+        border-bottom: 8px solid var(--accent);
         transform: translateX(-50%);
       }
 
@@ -122,18 +127,18 @@
         &::after {
           width: 60px;
           height: 15px;
-          border-right: 5px solid #c8d400 !important;
-          border-left: 5px solid #c8d400 !important;
+          border-right: 5px solid var(--accent) !important;
+          border-left: 5px solid var(--accent) !important;
         }
 
         &::before {
           top: -20px;
-          border-top: 5px solid #c8d400;
+          border-top: 5px solid var(--accent);
         }
 
         &::after {
           bottom: -20px;
-          border-bottom: 5px solid #c8d400;
+          border-bottom: 5px solid var(--accent);
         }
       }
     }
@@ -143,6 +148,16 @@
       left: 0;
       top: 50%;
       transform: translateY(-50%);
+      @media (max-width: 468px) {
+        position: initial;
+        margin-top: auto;
+        transform: none;
+        margin-top: 2rem;
+        margin-right: auto;
+      }
+      @media (max-width: 991px) {
+        font-size: 14px;
+      }
     }
   }
 

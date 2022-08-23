@@ -8,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatRadioModule } from '@angular/material/radio';
 
 /* import { NgxDropzoneModule } from 'ngx-dropzone'; */
 
@@ -30,6 +31,7 @@ import { PrestamosComponent } from './prestamos/prestamos.component';
     /* NgxDropzoneModule, */
     MatRippleModule,
     MatExpansionModule,
+    MatRadioModule,
   ],
   exports: [NovedadesComponent, PrestamosComponent],
 })
