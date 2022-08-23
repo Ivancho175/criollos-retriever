@@ -94,6 +94,7 @@ export class NovedadesComponent implements OnInit {
   }
 
   async ngOnInit() {
+    window.scroll(0, 0);
     const costCenter: any = await this.dataService.getCostCenter();
     this.centrosDeCostos = costCenter.data;
     /* const response: any = await this.dataService.getEmployees();
