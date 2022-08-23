@@ -187,7 +187,11 @@ export class PrestamosComponent implements OnInit {
       observaciones: form.controls['observaciones'].value,
     };
     this.dataService.newLoan(data);
+  }
+
+  toggleOpen() {
     location.reload();
+    this.openModal = !this.openModal;
   }
 
   findUserByName(name: string | null) {

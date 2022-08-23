@@ -283,4 +283,29 @@
       Guardar préstamo
     </button>
   </form>
+
+  <div class="modal" *ngIf="openModal">
+    <div class="card">
+      <div (click)="toggleOpen()" class="close">
+        <i class="fas fa-times"></i>
+      </div>
+      <figure class="card_image">
+        <img src="assets/images/gifs/success.gif" />
+      </figure>
+      <article class="card_text">
+        <h2 class="card_text_title">¡Préstamo registrado!</h2>
+        <p class="card_text_paragraph">
+          El préstamo ha sido registrado con éxito.
+        </p>
+      </article>
+      <button
+        (click)="toggleOpen()"
+        type="button"
+        class="send-button sm"
+        matRipple
+      >
+        Entendido
+      </button>
+    </div>
+  </div>
 </section>
