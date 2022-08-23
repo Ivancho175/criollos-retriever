@@ -13,6 +13,7 @@ import { DataService } from 'src/app/@core/services/data.service';
 import { Empleado, Jefe } from 'src/app/@core/models/empleados';
 import { Prestamo } from 'src/app/@core/models/prestamo';
 import { CentroCosto } from 'src/app/@core/models/centro-costo';
+import { NuevoPrestamo } from 'src/app/@core/models/nuevo-prestamo';
 
 @Component({
   selector: 'app-prestamos',
@@ -23,42 +24,17 @@ export class PrestamosComponent implements OnInit {
   date: Date = new Date();
   centrosDeCostos: CentroCosto[] = [];
   empleados: Empleado[] | undefined = [];
-  actualCentroDeCostos: CentroCosto | undefined = {
-    uuid: '',
-    codigo: 0,
-    centro_de_costo: '',
-    empleados: [
-      {
-        uuid: '',
-        identificacion: 0,
-        tipo_id: 'CC',
-        empleado: '',
-        sexo: '',
-        estado_civil: '',
-        fecha_ingreso: `${this.date}`,
-        salario: 0,
-        bienestar: 0,
-        transporte: 0,
-        comunicacion: 0,
-        cargo: '',
-        codigo_de_costo: 0,
-        centro_de_costo: '',
-        celular: 0,
-        direccion: '',
-        correo_corporativo: '',
-        rol: 1,
-      },
-    ],
-  };
+  actualCentroDeCostos?: CentroCosto;
   actualEmpleado?: Empleado;
   jefes: Jefe[] | undefined = [];
   prestamos: Prestamo[] = [];
   filteredEmpleadosNames!: Observable<string[]>;
-  filteredJefesNames!: Observable<string[]>;
+  /* filteredJefesNames!: Observable<string[]>; */
   filteredCostCenterNames!: Observable<string[]>;
   codigo: string = 'F-TH-07';
   version: number = 1;
   fecha_version: string = '12-Ago-2022';
+  openModal: boolean = false;
 
   public prestamosForm: FormGroup;
 
@@ -139,10 +115,10 @@ export class PrestamosComponent implements OnInit {
       startWith(''),
       map((value) => this._costCenterFilter(value))
     );
-    this.filteredJefesNames = this.aprueba.valueChanges.pipe(
+    /* this.filteredJefesNames = this.aprueba.valueChanges.pipe(
       startWith(''),
       map((value) => this._jefesFilter(value))
-    );
+    ); */
     this.filteredEmpleadosNames = this.empleado.valueChanges.pipe(
       startWith(''),
       map((value) => this._empleadosFilter(value))
@@ -171,7 +147,7 @@ export class PrestamosComponent implements OnInit {
     });
   }
 
-  private _jefesFilter(value: string | null): string[] {
+  /* private _jefesFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
     const jefesNames = this.jefes!.map((jefe: Jefe) => {
       return jefe.empleado;
@@ -179,7 +155,7 @@ export class PrestamosComponent implements OnInit {
     return jefesNames.filter((jefe: string) => {
       return jefe.toLowerCase().includes(filterValue);
     });
-  }
+  } */
 
   private _empleadosFilter(value: string | null): string[] {
     const filterValue = value!.toLowerCase();
@@ -196,7 +172,22 @@ export class PrestamosComponent implements OnInit {
   }
 
   sendForm(form: FormGroup) {
-    console.log(form.value);
+    this.openModal = true;
+    const data: NuevoPrestamo = {
+      quien_aprueba_el_prestamo: form.controls['aprueba'].value,
+      fecha: this.date,
+      nombre_del_empleado: form.controls['empleado'].value,
+      documento_de_identificacion: form.controls['identificacion'].value,
+      centro_de_costos: form.controls['centro_costos'].value,
+      fecha_ingreso_nomina: new Date(form.controls['fechaIngreso'].value),
+      tipo_de_prestamo: form.controls['tipoPrestamo'].value,
+      valor_del_prestamo: form.controls['valorPrestamo'].value,
+      numero_de_cuotas: form.controls['numeroCuotas'].value,
+      cuotas_extra: form.controls['cuotasExtra'].value,
+      observaciones: form.controls['observaciones'].value,
+    };
+    this.dataService.newLoan(data);
+    location.reload();
   }
 
   findUserByName(name: string | null) {
@@ -213,6 +204,27 @@ export class PrestamosComponent implements OnInit {
       this.prestamosForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
     }
     return null;
+  }
+
+  async findUserByNameInGeneralArray(name: string | null) {
+    const response: any = await this.dataService.getEmployees();
+    const inputRef = (this.empleados = await response!.data);
+    this._empleadosFilter(name);
+    /* if (name) {
+      this.actualEmpleado = this.empleados!.find((e: any) => {
+        const regex = new RegExp(name, 'gi');
+        return e.empleado === name;
+      });
+      console.log(this.actualEmpleado);
+      this.novedadesForm
+        .get('identificacion')
+        ?.patchValue(this.actualEmpleado?.identificacion);
+      const str = this.actualEmpleado?.fecha_ingreso;
+      const [year, month, day] = str!.split('-');
+      const date = new Date(+year, +month - 1, +day);
+      this.novedadesForm.get('fechaIngreso')?.patchValue(this.formatDate(date));
+    }
+    return null; */
   }
 
   get cuotasExtra(): FormArray {
@@ -246,16 +258,14 @@ export class PrestamosComponent implements OnInit {
       this.prestamosForm
         .get('codigo_centro')
         ?.patchValue(this.actualCentroDeCostos?.codigo);
-      this.empleados = this.actualCentroDeCostos?.empleados.filter(
-        (e: Empleado) => {
-          return e.rol === 2;
+      this.empleados = this.actualCentroDeCostos?.empleados;
+      const actualJefe = this.actualCentroDeCostos?.empleados.find(
+        (e: Jefe) => {
+          return e.rol === 1;
         }
       );
-      this.jefes = this.actualCentroDeCostos?.empleados.filter((e: Jefe) => {
-        return e.rol === 1;
-      });
-      console.log(this.empleados);
-      console.log(this.jefes);
+      this.prestamosForm.get('aprueba')?.patchValue(actualJefe!.empleado);
     }
+    return null;
   }
 }

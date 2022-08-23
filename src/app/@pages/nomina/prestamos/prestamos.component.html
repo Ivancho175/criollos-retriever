@@ -40,24 +40,20 @@
             *ngFor="let name of filteredCostCenterNames | async"
             [value]="name"
             style="color: #000"
+            (click)="findCostCenterByName(centro_costos.value)"
           >
             {{ name }}
           </mat-option>
         </mat-autocomplete>
-        <button
+        <!-- <button
           type="button"
           mat-raised-button
           color="accent"
           (click)="findCostCenterByName(centro_costos.value)"
         >
           Buscar
-        </button>
+        </button> -->
       </mat-form-field>
-
-      <!-- <mat-form-field appearance="fill">
-        <mat-label>Centro de costos</mat-label>
-        <input matInput disabled value="PRI" />
-      </mat-form-field> -->
 
       <mat-form-field class="disabled" appearance="fill" color="accent">
         <mat-label>Código Centro de costos</mat-label>
@@ -74,12 +70,12 @@
         <mat-label>Quién aprueba el préstamo</mat-label>
         <input
           matInput
+          class="disabled"
           type="text"
-          [matAutocomplete]="auto"
           formControlName="aprueba"
           color="accent"
         />
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option
             *ngFor="let name of filteredJefesNames | async"
             [value]="name"
@@ -87,7 +83,7 @@
           >
             {{ name }}
           </mat-option>
-        </mat-autocomplete>
+        </mat-autocomplete> -->
       </mat-form-field>
       <mat-form-field appearance="fill" class="disabled">
         <mat-label>Fecha diligenciamiento</mat-label>
@@ -110,6 +106,7 @@
             *ngFor="let name of filteredEmpleadosNames | async"
             [value]="name"
             style="color: #000"
+            (click)="findUserByName(empleado.value)"
           >
             {{ name }}
           </mat-option>
@@ -118,9 +115,9 @@
           type="button"
           mat-raised-button
           color="accent"
-          (click)="findUserByName(empleado.value)"
+          (click)="findUserByNameInGeneralArray(empleado.value)"
         >
-          Buscar
+          Ver todos
         </button>
       </mat-form-field>
 

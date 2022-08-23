@@ -185,9 +185,7 @@ export class NovedadesComponent implements OnInit {
           ? form.controls['observaciones'].value
           : form.controls['fechaNovedad'].value,
     };
-
-    console.log(data);
-    /* this.dataService.newNovelty(data); */
+    this.dataService.newNovelty(data);
   }
 
   findCostCenterByName(name: string | null) {

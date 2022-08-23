@@ -110,11 +110,7 @@
           formControlName="empleado"
           color="accent"
         />
-        <mat-autocomplete
-          #auto2="matAutocomplete"
-          [displayWith]="displayFn"
-          panelOpen="openPanel"
-        >
+        <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn">
           <mat-option
             *ngFor="let name of filteredEmpleadosNames | async"
             [value]="name"

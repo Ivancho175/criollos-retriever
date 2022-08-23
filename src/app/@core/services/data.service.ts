@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { NuevaNovedad } from '../models/nueva-novedad';
+import { NuevoPrestamo } from '../models/nuevo-prestamo';
 
 @Injectable({
   providedIn: 'root',
@@ -27,5 +28,9 @@ export class DataService {
 
   newNovelty(data: NuevaNovedad) {
     return this.http.post(environment.url + 'novelty', data).toPromise();
+  }
+
+  newLoan(data: NuevoPrestamo) {
+    return this.http.post(environment.url + 'loan', data).toPromise();
   }
 }
